@@ -16,7 +16,7 @@ public class MissingNumber {
 	 */
 	public int findMissing(int[] input) {
 
-		int max = Arrays.stream(input).max().getAsInt();
+		int max = input != null && input.length > 0 ? Arrays.stream(input).max().getAsInt() : 0;
 
 		boolean[] found = new boolean[max];
 

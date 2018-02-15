@@ -11,12 +11,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import sfranson.minesweeper.MineSweeperBoard;
-import sfranson.minesweeper.MineSweeperException;
+public class BoardTest {
 
-public class MineSweeperBoardTest {
-
-	private MineSweeperBoard instance;
+	private Board instance;
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -86,7 +83,7 @@ public class MineSweeperBoardTest {
 
 	@Test
 	public void mineSweeperWithIdRowsAndColumns() {
-		instance = new MineSweeperBoard("constructor", 1, 5);
+		instance = new Board("constructor", 1, 5);
 
 		assertThat(instance.getId(), equalTo("constructor"));
 		assertThat(instance.getRowCount(), equalTo(1));
@@ -147,7 +144,7 @@ public class MineSweeperBoardTest {
 
 	@Before
 	public void setup() {
-		instance = new MineSweeperBoard();
+		instance = new Board();
 	}
 
 	@Test

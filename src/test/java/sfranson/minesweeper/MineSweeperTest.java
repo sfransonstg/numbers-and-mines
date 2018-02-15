@@ -31,10 +31,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import sfranson.minesweeper.MineSweeper;
-import sfranson.minesweeper.MineSweeperBoard;
-import sfranson.minesweeper.MineSweeperException;
-
 public class MineSweeperTest {
 
 	private MineSweeper instance;
@@ -113,16 +109,30 @@ public class MineSweeperTest {
 	public void mainCallsSweep() {
 
 		doNothing().when(instance).sweep();
-		
+
 		MineSweeper.main(params);
 
 		verify(instance).sweep();
 	}
 
 	@Test
+	public void processBoardCallsRowsAsColumns() {
+		Board board = Mockito.mock(Board.class);
+
+		doReturn(true).when(instance).rowsAsColumns();
+
+		when(board.getId()).thenReturn("2");
+
+		Board result = instance.processBoard("1 1", board);
+
+		assertThat(result.usingRowsAsColumns(), equalTo(true));
+
+	}
+
+	@Test
 	public void processBoardSetsDimensions() {
 
-		MineSweeperBoard result = instance.processBoard("11 10", null);
+		Board result = instance.processBoard("11 10", null);
 
 		assertThat(result.getRowCount(), equalTo(11));
 		assertThat(result.getColumnCount(), equalTo(10));
@@ -132,7 +142,7 @@ public class MineSweeperTest {
 	@Test
 	public void processBoardSetsFirstId() {
 
-		MineSweeperBoard result = instance.processBoard("1 1", null);
+		Board result = instance.processBoard("1 1", null);
 
 		assertThat(result.getId(), equalTo("1"));
 
@@ -140,41 +150,18 @@ public class MineSweeperTest {
 
 	@Test
 	public void processBoardSetsIncrementedId() {
-		MineSweeperBoard board = Mockito.mock(MineSweeperBoard.class);
+		Board board = Mockito.mock(Board.class);
 		when(board.getId()).thenReturn("2");
 
-		MineSweeperBoard result = instance.processBoard("1 1", board);
+		Board result = instance.processBoard("1 1", board);
 
 		assertThat(result.getId(), equalTo("3"));
 
 	}
-	@Test
-	public void processBoardCallsRowsAsColumns() {
-		MineSweeperBoard board = Mockito.mock(MineSweeperBoard.class);
-		
-		doReturn(true).when(instance).rowsAsColumns();
-		
-		when(board.getId()).thenReturn("2");
-		
-		MineSweeperBoard result = instance.processBoard("1 1", board);
-		
-		assertThat(result.usingRowsAsColumns(), equalTo(true));
-		
-	}
-	
-	@Test
-	public void rowsAsColumns() {
-		params = new String[2];
-		params[1] = "columns";
-		setupInstance();
-		
-		MineSweeperBoard board = instance.processBoard("0 0", null);
-		assertThat(board.usingRowsAsColumns(), equalTo(true));
-	}
 
 	@Test
 	public void processInputPrintsOnStart() {
-		MineSweeperBoard board = Mockito.mock(MineSweeperBoard.class);
+		Board board = Mockito.mock(Board.class);
 
 		instance.processInput("0 0", board);
 		verify(board).print(outputStream);
@@ -182,7 +169,7 @@ public class MineSweeperTest {
 
 	@Test
 	public void processInputProcessesNewBoard() {
-		MineSweeperBoard board = Mockito.mock(MineSweeperBoard.class);
+		Board board = Mockito.mock(Board.class);
 
 		doReturn(board).when(instance).processBoard(any(), any());
 
@@ -200,12 +187,22 @@ public class MineSweeperTest {
 
 	@Test
 	public void processInputValidInput() {
-		MineSweeperBoard board = Mockito.mock(MineSweeperBoard.class);
+		Board board = Mockito.mock(Board.class);
 
 		String input = "**..";
 
 		assertThat(instance.processInput(input, board), equalTo(board));
 		verify(board).withRow(input);
+	}
+
+	@Test
+	public void rowsAsColumns() {
+		params = new String[2];
+		params[1] = "columns";
+		setupInstance();
+
+		Board board = instance.processBoard("0 0", null);
+		assertThat(board.usingRowsAsColumns(), equalTo(true));
 	}
 
 	@Test
@@ -244,7 +241,7 @@ public class MineSweeperTest {
 		Scanner scanner = new Scanner(new StringReader("*....\n....\n"));
 		doReturn(scanner).when(instance).scanner(params);
 
-		MineSweeperBoard result = Mockito.mock(MineSweeperBoard.class);
+		Board result = Mockito.mock(Board.class);
 		doReturn(result).when(instance).processInput(any(), any());
 
 		instance.sweep();
@@ -258,7 +255,7 @@ public class MineSweeperTest {
 		Scanner scanner = new Scanner(new StringReader("*....\n....\n0 0\n"));
 		doReturn(scanner).when(instance).scanner(params);
 
-		MineSweeperBoard result = Mockito.mock(MineSweeperBoard.class);
+		Board result = Mockito.mock(Board.class);
 		doReturn(result).when(instance).processInput(any(), any());
 
 		instance.sweep();

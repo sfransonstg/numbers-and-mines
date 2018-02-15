@@ -8,22 +8,55 @@ import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+/**
+ * Program that will read a set of board definitions from a file and print out
+ * the calculated hints.
+ */
 public class MineSweeper {
 
+	/**
+	 * Regex used for detecting the start of a board definition.
+	 */
 	private static final String BOARD_START_REGEX = "\\d\\s*\\d";
+
+	/**
+	 * Reges used for detecting the end of input.
+	 */
 	private static final String INPUT_END_REGEX = "0\\s*0";
+
 	// package private for testing
 	static MineSweeper instance;
 
+	/**
+	 * Regex used for detecting a valid cell definition line.
+	 */
 	private static final String VALID_INPUT_REGEX = "[\\*\\.]*";
 
-	public static MineSweeper instance(String[] args) {
+	/**
+	 * Gets an instance of the program.
+	 * 
+	 * <p>
+	 * Package private to aid in testing.
+	 * </p>
+	 * 
+	 * @param args
+	 */
+	static MineSweeper instance(String[] args) {
 		if (instance == null) {
 			return new MineSweeper(args, System.out);
 		}
 		return instance;
 	}
 
+	/**
+	 * <ul>
+	 * Valid Arguments:
+	 * <li>0 - name/path of file containing board definitions.</li>
+	 * <li>1 (optional) - "columns" if the board defitions should be interpreted as
+	 * column-oriented, rather than row-oriented.</li>
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			instance(args).sweep();
@@ -37,6 +70,10 @@ public class MineSweeper {
 
 	private String[] params;
 
+	/**
+	 * Creates an instance with a given set of parameters and sets the output
+	 * stream.
+	 */
 	public MineSweeper(String[] params, OutputStream out) {
 		this.params = params;
 		this.out = out;
@@ -59,7 +96,7 @@ public class MineSweeper {
 		return getClass().getResourceAsStream(fileName);
 	}
 
-	MineSweeperBoard processBoard(String input, MineSweeperBoard currentBoard) {
+	Board processBoard(String input, Board currentBoard) {
 		String[] dimensions = input.split("\\s");
 
 		String oldId = currentBoard != null ? currentBoard.getId() : "0";
@@ -73,16 +110,16 @@ public class MineSweeper {
 		int rowCount = rowsAsColumns ? columns : rows;
 		int colCount = rowsAsColumns ? rows : columns;
 
-		MineSweeperBoard board = new MineSweeperBoard(Integer.toString(id), rowCount, colCount);
+		Board board = new Board(Integer.toString(id), rowCount, colCount);
 		if (rowsAsColumns) {
 			board.rowsAsColumns();
 		}
 		return board;
 	}
 
-	MineSweeperBoard processInput(String input, MineSweeperBoard currentBoard) {
+	Board processInput(String input, Board currentBoard) {
 
-		MineSweeperBoard boardUsed = null;
+		Board boardUsed = null;
 
 		if (input.matches(BOARD_START_REGEX)) {
 			if (currentBoard != null) {
@@ -124,7 +161,7 @@ public class MineSweeper {
 	void sweep() {
 		Scanner scanner = scanner(params);
 
-		MineSweeperBoard currentBoard = null;
+		Board currentBoard = null;
 
 		do {
 			String input = scanner.nextLine();

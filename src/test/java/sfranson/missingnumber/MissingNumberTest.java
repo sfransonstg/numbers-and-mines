@@ -6,8 +6,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-import sfranson.missingnumber.MissingNumber;
-
 public class MissingNumberTest {
 
 	private MissingNumber instance;
@@ -38,21 +36,30 @@ public class MissingNumberTest {
 	}
 
 	@Test
-	public void findMissingSmall() {
-		int[] intArray = new int[] { 3, 1 };
+	public void findMissingEmpty() {
+		int[] intArray = new int[] { };
 
-		int expected = 2;
+		int expected = -1;
 
 		int result = instance.findMissing(intArray);
 
 		assertThat(result, equalTo(expected));
-
+	}
+	
+	@Test
+	public void findMissingSmall() {
+		int[] intArray = new int[] { 1, 3 };
+		
+		int expected = 2;
+		
+		int result = instance.findMissing(intArray);
+		
+		assertThat(result, equalTo(expected));
 	}
 
 	@Before
 	public void setup() {
 		instance = new MissingNumber();
-
 	}
 
 }

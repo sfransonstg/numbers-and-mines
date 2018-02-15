@@ -3,6 +3,10 @@ package sfranson;
 import sfranson.minesweeper.MineSweeper;
 import sfranson.missingnumber.MissingNumber;
 
+/**
+ * Application that executes sample runs of the MissingNumbers class and
+ * MineSweeper application.
+ */
 public class NumbersAndMinesApplication {
 
 	public static void main(String[] args) {
@@ -13,7 +17,7 @@ public class NumbersAndMinesApplication {
 
 		System.out.println("**** Running Mine Sweeper ****");
 		MineSweeper.main(new String[] { "/minesweeper-input.txt" });
-		
+
 		System.out.println("**** Running Mine Sweeper w/ rows as columns ****");
 		MineSweeper.main(new String[] { "/minesweeper-input-columns.txt", "columns" });
 	}
